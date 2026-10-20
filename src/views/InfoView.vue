@@ -94,7 +94,7 @@ const mapsHref = computed(() => `https://www.google.com/maps/search/?api=1&query
 </template>
 
 <style scoped>
-.ph { padding: 24px 0 0; display: grid; gap: 6px; }
+.ph { padding: 8px 0 0; display: grid; gap: 6px; }
 .stay { display: flex; gap: 12px; align-items: flex-start; flex-wrap: wrap; }
 .st { flex: 1; min-width: 160px; display: flex; flex-direction: column; gap: 3px; }
 .st b { font-weight: 700; font-size: 15px; }

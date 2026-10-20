@@ -41,7 +41,7 @@ ul, ol { list-style: none; }
 .ic { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; flex: none; }
 
 /* ---------- page ---------- */
-.page { max-width: var(--maxw); margin: 0 auto; padding: 0 var(--gutter) calc(var(--tabbar) + var(--sab) + 32px); }
+.page { max-width: var(--maxw); margin: 0 auto; padding: 16px var(--gutter) calc(var(--tabbar) + var(--sab) + 32px); }
 
 /* ---------- hero (solid block) ---------- */
 .hero { background: var(--sec); color: #fff; border-radius: var(--r-xl); padding: 20px; display: grid; gap: 10px; }

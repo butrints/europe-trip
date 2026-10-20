@@ -68,7 +68,7 @@ const keyRoutes = computed(() => t.routes.filter((r) => r.id.startsWith('key-') 
 </template>
 
 <style scoped>
-.ph { padding: 24px 0 0; display: grid; gap: 6px; }
+.ph { padding: 8px 0 0; display: grid; gap: 6px; }
 .block { margin-top: 20px; display: grid; gap: 12px; }
 .stack { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; }
 .kr { display: flex; align-items: center; gap: 12px; width: 100%; padding: 14px; text-align: left; color: var(--fg); }

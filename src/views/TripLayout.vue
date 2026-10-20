@@ -78,19 +78,18 @@ function back() {
 
 <style scoped>
 .shell { min-height: 100dvh; }
-.hdr { position: sticky; top: 0; z-index: 50; display: flex; align-items: center; gap: 8px; max-width: var(--maxw); margin: 0 auto; padding: calc(var(--sat) + 8px) calc(var(--gutter) - 8px) 8px; background: var(--bg); border-bottom: 1px solid var(--line); }
+.hdr { position: sticky; top: 0; z-index: 50; display: flex; align-items: center; gap: 8px; max-width: var(--maxw); margin: 0 auto; padding: calc(var(--sat) + 24px) calc(var(--gutter) - 8px) 8px; background: var(--bg); border-bottom: 1px solid var(--line); }
 .hb { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; color: var(--fg-2); transition: background .15s; }
 .hb:active { background: var(--bg-2); }
 .ht { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: center; text-align: center; }
 .ht .t { font-size: 17px; font-weight: 700; letter-spacing: -.01em; line-height: 1.15; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
 .ht .s { font-size: 12px; color: var(--fg-2); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
 
-.tabbar { position: fixed; left: 50%; bottom: calc(var(--sab) + 12px); transform: translateX(-50%); z-index: 60; display: flex; gap: 2px; max-width: calc(var(--maxw) - 40px); padding: 6px; border-radius: var(--r-pill); background: var(--card); border: 1px solid var(--line); box-shadow: var(--sh-2); }
-.tab { display: flex; align-items: center; justify-content: center; gap: 6px; height: 46px; min-width: 46px; padding: 0; border-radius: var(--r-pill); color: var(--fg-2); font-size: 13px; font-weight: 700; transition: background .2s, color .2s; }
-.tab span { display: none; }
-.tab.active { background: var(--sec); color: #fff; padding: 0 16px; }
-.tab.active span { display: inline; }
-.tab .ic { width: 22px; height: 22px; }
+.tabbar { position: fixed; left: 50%; bottom: calc(var(--sab) + 12px); transform: translateX(-50%); z-index: 60; display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 2px; width: calc(100% - 2 * var(--gutter)); max-width: calc(var(--maxw) - 40px); padding: 6px; border-radius: var(--r-pill); background: var(--card); border: 1px solid var(--line); box-shadow: var(--sh-2); }
+.tab { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; height: 50px; min-width: 0; padding: 0 4px; border-radius: var(--r-pill); color: var(--fg-2); font-size: 10px; font-weight: 700; letter-spacing: .02em; transition: background .2s, color .2s; }
+.tab span { display: block; line-height: 1; }
+.tab.active { background: var(--sec); color: #fff; }
+.tab .ic { width: 20px; height: 20px; }
 
 .loading { display: grid; place-items: center; height: 100dvh; }
 .spin { width: 28px; height: 28px; border-radius: 50%; border: 3px solid var(--line-2); border-top-color: var(--sec, var(--c-plan)); animation: spin .8s linear infinite; }
