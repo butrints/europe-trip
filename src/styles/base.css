@@ -1,0 +1,172 @@
+@import './tokens.css';
+
+/* ---------- reset ---------- */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { -webkit-text-size-adjust: 100%; height: 100%; scroll-behavior: smooth; }
+body {
+  min-height: 100%;
+  font-family: var(--font);
+  font-size: 15px;
+  line-height: 1.45;
+  background: var(--bg);
+  color: var(--fg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overscroll-behavior-y: none;
+}
+button, input, select, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; background: none; border: 0; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+a { color: var(--sec); text-decoration: none; }
+img { display: block; max-width: 100%; }
+svg { display: block; }
+ul, ol { list-style: none; }
+
+/* ---------- section colour mapping ---------- */
+.shell[data-sec="plan"] { --sec: var(--c-plan); --sec-soft: var(--k-home-soft); }
+.shell[data-sec="explore"] { --sec: var(--c-explore); --sec-soft: var(--k-free-soft); }
+.shell[data-sec="map"] { --sec: var(--c-map); --sec-soft: var(--k-view-soft); }
+.shell[data-sec="transit"] { --sec: var(--c-transit); --sec-soft: var(--k-sight-soft); }
+.shell[data-sec="info"] { --sec: var(--c-info); --sec-soft: var(--k-flight-soft); }
+
+/* ---------- type helpers ---------- */
+.num { font-variant-numeric: tabular-nums; }
+.muted { color: var(--fg-2); }
+.faint { color: var(--fg-3); }
+.eyebrow { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--sec); }
+.h1 { font-size: 28px; font-weight: 800; line-height: 1.15; letter-spacing: -.01em; text-wrap: balance; }
+.h2 { font-size: 22px; font-weight: 800; line-height: 1.15; letter-spacing: -.01em; text-wrap: balance; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* ---------- icons ---------- */
+.ic { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+
+/* ---------- page ---------- */
+.page { max-width: var(--maxw); margin: 0 auto; padding: 0 var(--gutter) calc(var(--tabbar) + var(--sab) + 32px); }
+
+/* ---------- hero (solid block) ---------- */
+.hero { background: var(--sec); color: #fff; border-radius: var(--r-xl); padding: 20px; display: grid; gap: 10px; }
+.hero-k { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: rgba(255, 255, 255, .72); }
+.hero-t { font-size: 28px; font-weight: 800; line-height: 1.15; letter-spacing: -.01em; color: #fff; text-wrap: balance; }
+.hero-s {
+  font-size: 15px; color: rgba(255, 255, 255, .9);
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden;
+}
+.hero-s.open { display: block; -webkit-line-clamp: unset; line-clamp: none; overflow: visible; }
+
+/* ---------- section head ---------- */
+.sec-head {
+  display: flex; align-items: center; gap: 8px; margin: 28px 0 12px;
+  font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--fg-2);
+}
+.sec-head .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--sec); flex: none; }
+.sec-head .count {
+  display: inline-flex; align-items: center; justify-content: center; min-width: 22px; height: 20px; padding: 0 7px;
+  border-radius: var(--r-pill); background: var(--bg-2); color: var(--fg-2);
+  font-size: 11px; font-weight: 700; letter-spacing: 0; font-variant-numeric: tabular-nums;
+}
+.sec-head .more { margin-left: auto; font-size: 13px; font-weight: 700; letter-spacing: 0; text-transform: none; color: var(--sec); }
+
+/* ---------- card ---------- */
+.card { background: var(--card); border: 1px solid var(--line); border-radius: var(--r-lg); }
+.card.tint { background: var(--tint); border-color: transparent; }
+.card.pad { padding: 16px; }
+
+/* ---------- icon tile ---------- */
+.ico-tile { width: 36px; height: 36px; border-radius: 11px; display: grid; place-items: center; background: var(--k-soft); color: var(--k); flex: none; }
+.ico-tile.solid { background: var(--k); color: #fff; }
+.ico-tile.lg { width: 46px; height: 46px; border-radius: 14px; }
+
+/* ---------- buttons ---------- */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 46px; padding: 0 20px; border-radius: var(--r-pill);
+  font-size: 15px; font-weight: 600; white-space: nowrap;
+  transition: transform .2s var(--ease), background .2s, color .2s;
+}
+.btn:active { transform: scale(.97); }
+.btn .ic { width: 18px; height: 18px; }
+.btn-fill { background: var(--sec); color: #fff; }
+.btn-soft { background: var(--sec-soft); color: var(--sec); }
+.btn-tonal { background: var(--bg-2); color: var(--fg); }
+.btn-sm { min-height: 38px; padding: 0 14px; font-size: 13px; }
+.btn-sm .ic { width: 16px; height: 16px; }
+.btn-block { width: 100%; }
+
+/* ---------- chips ---------- */
+.chips {
+  display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none;
+  margin: 0 calc(-1 * var(--gutter)); padding: 0 var(--gutter);
+}
+.chips::-webkit-scrollbar { display: none; }
+.chip {
+  flex: none; display: inline-flex; align-items: center; gap: 6px;
+  min-height: 38px; padding: 0 14px; border-radius: var(--r-pill);
+  background: var(--card); border: 1px solid var(--line); color: var(--fg-2);
+  font-size: 13px; font-weight: 600; white-space: nowrap;
+  transition: background .2s, border-color .2s, color .2s, transform .2s var(--ease);
+}
+.chip:active { transform: scale(.96); }
+.chip .ic { width: 16px; height: 16px; }
+.chip.on { background: var(--sec); border-color: var(--sec); color: #fff; }
+
+/* ---------- tag ---------- */
+.tag {
+  display: inline-flex; align-items: center; gap: 4px; padding: 3px 9px; border-radius: 7px;
+  font-size: 11px; font-weight: 700; white-space: nowrap;
+  background: var(--tag-soft, var(--bg-2)); color: var(--tag, var(--fg-2));
+}
+
+/* ---------- transit line badge ---------- */
+.line {
+  display: inline-flex; align-items: center; justify-content: center; min-width: 32px; height: 26px; padding: 0 8px;
+  border-radius: 8px; font-size: 13px; font-weight: 800; color: #fff; background: var(--fg);
+  font-variant-numeric: tabular-nums; white-space: nowrap;
+}
+.line.tram, .line.delijn { background: var(--delijn); color: var(--delijn-ink); }
+.line.bus { background: #3A6EA5; }
+.line.train, .line.nmbs { background: var(--nmbs); }
+.line.ns { background: var(--ns); color: var(--ns-ink); }
+.line.metro, .line.gvb { background: var(--gvb); }
+.line.ferry { background: #1B9AAA; }
+.line.eurostar { background: var(--eurostar); }
+.line.flibco { background: var(--flibco); }
+.line.walk { background: var(--bg-2); color: var(--fg); }
+.line.plane { background: #4B4F5B; }
+
+/* ---------- fact (label / value) ---------- */
+.fact { display: grid; gap: 3px; min-width: 0; }
+.fact .k {
+  display: flex; align-items: center; gap: 4px;
+  font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--fg-3);
+}
+.fact .k .ic { width: 14px; height: 14px; }
+.fact .v { font-size: 15px; font-weight: 600; line-height: 1.3; color: var(--fg); }
+
+/* ---------- check ---------- */
+.check {
+  width: 28px; height: 28px; border-radius: 50%; flex: none;
+  display: grid; place-items: center;
+  border: 1.5px solid var(--line-2); background: transparent; color: transparent;
+  transition: background .2s, border-color .2s, color .2s;
+}
+.check .ic { width: 16px; height: 16px; stroke-width: 2.25; }
+.check.on { background: var(--k-free); border-color: var(--k-free); color: #fff; }
+
+/* ---------- empty state ---------- */
+.empty { padding: 48px 16px; text-align: center; color: var(--fg-2); font-size: 15px; }
+
+/* ---------- transitions ---------- */
+.fade-enter-active, .fade-leave-active { transition: opacity .2s var(--ease); }
+.fade-enter-from, .fade-leave-to { opacity: 0; }
+
+/* ---------- responsive ---------- */
+@media (min-width: 720px) {
+  :root { --gutter: 28px; --maxw: 720px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important; animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important; scroll-behavior: auto !important;
+  }
+}

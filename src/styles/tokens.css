@@ -1,0 +1,138 @@
+/* ============================================================
+   europe-trip — design tokens
+   Solid colour blocks: neutral surfaces, one colour per screen.
+   Light is the default; dark lives on :root[data-theme="dark"]
+   (useTheme always sets the attribute).
+   ============================================================ */
+
+:root {
+  --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", Inter, "Segoe UI", Roboto, sans-serif;
+
+  /* surfaces + text */
+  --bg: #F2F3F5;
+  --bg-2: #E9EBEF;
+  --card: #FFFFFF;
+  --card-2: #F7F8FA;
+  --fg: #15171C;
+  --fg-2: #5F6573;
+  --fg-3: #9AA0AE;
+  --line: #E3E5EA;
+  --line-2: #CDD1D9;
+
+  /* section colours (one per screen) */
+  --c-plan: #E0532E;
+  --c-explore: #1E8A5F;
+  --c-map: #0E8C9E;
+  --c-transit: #2F6FD6;
+  --c-info: #7A4ED9;
+
+  /* current screen accent — overridden by .shell[data-sec] in base.css */
+  --sec: var(--c-plan);
+  --sec-soft: var(--k-home-soft);
+
+  /* item kinds */
+  --k-flight: #7A4ED9;
+  --k-transit: #7A4ED9;
+  --k-sight: #2F6FD6;
+  --k-view: #0E8C9E;
+  --k-food: #D99B12;
+  --k-xmas: #D63A6E;
+  --k-free: #1E8A5F;
+  --k-home: #E0532E;
+  --k-shop: #A3561F;
+  --k-note: #6B7080;
+
+  /* item kind soft tints */
+  --k-flight-soft: #EDE6FB;
+  --k-transit-soft: #EDE6FB;
+  --k-sight-soft: #E4ECFB;
+  --k-view-soft: #DFF2F5;
+  --k-food-soft: #FBF0D5;
+  --k-xmas-soft: #FBE3EB;
+  --k-free-soft: #E2F3EB;
+  --k-home-soft: #FBE9E3;
+  --k-shop-soft: #F6E8DD;
+  --k-note-soft: #EEF0F3;
+
+  /* operators */
+  --delijn: #FFD200;
+  --delijn-ink: #1D1D1B;
+  --nmbs: #005AA0;
+  --ns: #FFC917;
+  --ns-ink: #003082;
+  --gvb: #0066CC;
+  --eurostar: #0B2F6B;
+  --flibco: #E2001A;
+
+  /* radius */
+  --r-sm: 10px;
+  --r-md: 14px;
+  --r-lg: 18px;
+  --r-xl: 22px;
+  --r-pill: 999px;
+
+  /* shadow */
+  --sh-1: 0 1px 2px rgba(21, 23, 28, .06), 0 2px 8px rgba(21, 23, 28, .05);
+  --sh-2: 0 8px 28px rgba(21, 23, 28, .12);
+
+  /* motion + overlays */
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-spring: cubic-bezier(0.34, 1.4, 0.64, 1);
+  --overlay: rgba(21, 23, 28, .45);
+  --map-filter: none;
+
+  /* layout */
+  --gutter: 20px;
+  --maxw: 640px;
+  --tabbar: 64px;
+  --sat: env(safe-area-inset-top, 0px);
+  --sab: env(safe-area-inset-bottom, 0px);
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg: #0E1014;
+  --bg-2: #15181E;
+  --card: #191C22;
+  --card-2: #20242C;
+  --fg: #F1F2F5;
+  --fg-2: #A0A6B4;
+  --fg-3: #6E7482;
+  --line: #2A2E37;
+  --line-2: #3A3F4A;
+
+  --c-plan: #EE6A47;
+  --c-explore: #3DA87C;
+  --c-map: #2FA8BA;
+  --c-transit: #5B8DE8;
+  --c-info: #9A75E8;
+
+  --k-flight: #9A75E8;
+  --k-transit: #9A75E8;
+  --k-sight: #5B8DE8;
+  --k-view: #2FA8BA;
+  --k-food: #E8B33A;
+  --k-xmas: #E8588A;
+  --k-free: #3DA87C;
+  --k-home: #EE6A47;
+  --k-shop: #C2703A;
+  --k-note: #8A90A0;
+
+  --k-flight-soft: #2B2146;
+  --k-transit-soft: #2B2146;
+  --k-sight-soft: #1D2A45;
+  --k-view-soft: #123238;
+  --k-food-soft: #3A2E12;
+  --k-xmas-soft: #3C1826;
+  --k-free-soft: #163325;
+  --k-home-soft: #3C1E16;
+  --k-shop-soft: #36241A;
+  --k-note-soft: #22262E;
+
+  --sh-1: 0 1px 2px rgba(0, 0, 0, .35), 0 2px 8px rgba(0, 0, 0, .25);
+  --sh-2: 0 8px 28px rgba(0, 0, 0, .5);
+
+  --overlay: rgba(0, 0, 0, .6);
+  --map-filter: invert(1) hue-rotate(180deg) brightness(0.85) contrast(0.9) saturate(0.6);
+}
