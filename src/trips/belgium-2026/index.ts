@@ -210,6 +210,11 @@ const places: Place[] = [
     blurb: 'Guided tasting of six aged Goudas with wine in a cellar classroom on the Singel, ~€17.50. Sessions 12:00/13:30/15:00/16:30.',
     hours: 'Sessions 12:00–16:30', price: '€17.50', duration: '1 h', stop: 'Singel 182 · near Dam', book: { url: 'https://www.reypenaer.com/tasting-room', label: 'Book session' } },
 
+  { id: 'red-light', name: 'De Wallen (Red Light District)', city: 'amsterdam', cat: 'sight', pos: { lat: 52.3735, lng: 4.8985 }, rating: 2, tags: ['free', 'evening'],
+    blurb: 'The oldest part of the city: medieval lanes, the Oude Kerk, canals lit red after dark. Five minutes from Centraal — a walk-through between dinner and the cruise, not a destination.',
+    about: ['Go after 18:00 when the lights are on; Fridays are busy and loud but safe. Loop: Warmoesstraat → Oudezijds Voorburgwal → Oude Kerk → Oudezijds Achterburgwal → Zeedijk (Chinatown) → Nieuwmarkt. 25–30 min.', 'Café de Sluyswacht and the Waag on Nieuwmarkt are the natural end point for a beer.'],
+    hours: 'Always · lights from ~18:00', price: 'Free', duration: '30 min', stop: 'Walk 5 min from Centraal (Damrak side)',
+    tips: ['Never photograph the windows — it is enforced by the workers and the police.', 'Keep phones and wallets zipped; pickpockets work the crowd.', 'Tour groups were banned here; walk it yourselves.'] },
   // ===== DAY TRIPS (Sat/Sun/Mon) =====
   { id: 'ghent', name: 'Ghent · Winterfeesten', city: 'daytrips', cat: 'xmas', pos: { lat: 51.0543, lng: 3.7215 }, rating: 3, tags: ['must', 'evening', 'romantic'],
     blurb: 'Graslei at dusk, three towers in a row, a Christmas market with rink, curling and Ferris wheel (3 Dec – 3 Jan). 55 min by train, every 15 min. Best Sunday.',
@@ -489,6 +494,7 @@ const days: Day[] = [
       { id: 'd4-i7', kind: 'xmas', title: 'Museumplein rink & Christmas Village', sub: 'Between the two museums · village 12–21', placeId: 'museumplein-xmas' },
       { id: 'd4-i8', kind: 'food', title: 'Bitterballen at Café Luxembourg', sub: 'Spui · the Dutch snack done right', placeId: 'cafe-luxembourg' },
       { id: 'd4-i9', kind: 'food', title: 'Albert Cuyp stroopwafels', sub: 'Fresh from the iron, €3 · stalls close 17:00', placeId: 'albert-cuyp', optional: true },
+      { id: 'd4-i10', kind: 'sight', title: 'De Wallen after dark', sub: 'Oude Kerk, red-lit canals, Zeedijk → Nieuwmarkt · 30 min walk-through', placeId: 'red-light', tags: ['evening'], optional: true },
     ],
   },
   {

@@ -3,8 +3,10 @@ import { onMounted, ref } from 'vue';
 import Toast from '@/components/ui/Toast.vue';
 import { useTheme } from '@/composables/useTheme';
 import { onToast } from '@/composables/useSheet';
+import { startSync } from '@/composables/useSync';
 
 useTheme();
+startSync();
 const toastEl = ref<InstanceType<typeof Toast> | null>(null);
 onMounted(() => onToast((m) => toastEl.value?.toast(m)));
 </script>

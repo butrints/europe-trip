@@ -71,8 +71,19 @@ const nav = (p: { pos: { lat: number; lng: number }; name: string }) => navLinks
 
 // view-only UI state
 const sumOpen = ref(false);
-const ideasOpen = ref(false);
-watch(sel, () => { sumOpen.value = false; });
+const ideasOpen = ref(pickPlaces.value.length === 0);
+watch(sel, () => { sumOpen.value = false; ideasOpen.value = pickPlaces.value.length === 0; });
+
+/** Free blocks of 2 h+ between fixed items — the part of the day you build yourself. */
+const gapAfter = (i: number) => {
+  const a = anchors.value[i], b = anchors.value[i + 1];
+  if (!a || !b) return null;
+  const from = toMin(a.end ?? a.time!), to = toMin(b.time!);
+  if (to - from < 120) return null;
+  const h = Math.floor((to - from) / 60), m = (to - from) % 60;
+  return { from: a.end ?? a.time!, to: b.time!, label: `${h} h${m ? ` ${String(m).padStart(2, '0')}` : ''} free` };
+};
+function jumpToIdeas() { ideasOpen.value = true; document.getElementById('ideas')?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
 </script>
 
 <template>
@@ -129,7 +140,14 @@ watch(sel, () => { sumOpen.value = false; });
     <section v-if="anchors.length">
       <div class="sec-head"><span class="dot" />Fixed times<span class="count">{{ anchors.length }}</span><span v-if="dayCity" class="where">{{ dayCity.name }}</span></div>
       <div class="stack">
-        <TimelineItem v-for="it in anchors" :key="it.id" :item="it" :done="done.has(it.id)" :is-now="it.id === currentId" :is-past="isPast(it.id)" @toggle="done.toggle(it.id)" />
+        <template v-for="(it, i) in anchors" :key="it.id">
+          <TimelineItem :item="it" :done="done.has(it.id)" :is-now="it.id === currentId" :is-past="isPast(it.id)" @toggle="done.toggle(it.id)" />
+          <button v-if="gapAfter(i)" class="gap" @click="jumpToIdeas">
+            <span class="gt num">{{ gapAfter(i)!.from }} → {{ gapAfter(i)!.to }}</span>
+            <span class="gl">{{ gapAfter(i)!.label }} · your picks + ideas</span>
+            <Icon name="chevron" :size="16" />
+          </button>
+        </template>
       </div>
     </section>
 
@@ -157,7 +175,7 @@ watch(sel, () => { sumOpen.value = false; });
     <section v-if="ideas.length">
       <div class="sec-head">
         <span class="dot" />Ideas for this day
-        <button class="more" :aria-expanded="ideasOpen" @click="ideasOpen = !ideasOpen">{{ ideasOpen ? 'Hide' : `Show ideas (${ideas.length})` }}</button>
+        <button id="ideas" class="more" :aria-expanded="ideasOpen" @click="ideasOpen = !ideasOpen">{{ ideasOpen ? 'Hide' : `Show ideas (${ideas.length})` }}</button>
       </div>
       <div v-if="ideasOpen" class="stack">
         <TimelineItem v-for="it in ideas" :key="it.id" :item="it" :done="done.has(it.id)" :is-now="false" :is-past="false" compact @toggle="done.toggle(it.id)" />
@@ -207,6 +225,10 @@ watch(sel, () => { sumOpen.value = false; });
 /* sections */
 .sec-head .where { margin-left: auto; font-size: 13px; font-weight: 600; letter-spacing: 0; text-transform: none; color: var(--fg-3); }
 .stack { display: grid; gap: 12px; }
+.gap { display: flex; align-items: center; gap: 10px; margin-left: 64px; padding: 10px 14px; border-radius: var(--r-md); border: 1px dashed var(--line-2); background: transparent; color: var(--fg-2); text-align: left; }
+.gap .gt { font-size: 13px; font-weight: 700; color: var(--fg); white-space: nowrap; }
+.gap .gl { flex: 1; font-size: 13px; min-width: 0; }
+.gap .ic { color: var(--sec); }
 
 /* picks */
 .pick { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: center; }

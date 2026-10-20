@@ -1,13 +1,11 @@
 <script setup lang="ts">
-import { computed, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
+import { computed } from 'vue';
 import { TRIPS } from '@/trips';
 import { fmtRange, isoDate, useCountdown, useNow } from '@/composables/useNow';
 import { useTheme } from '@/composables/useTheme';
 import Icon from '@/components/ui/Icon.vue';
 import SmartImg from '@/components/ui/SmartImg.vue';
 
-const router = useRouter();
 const now = useNow();
 const { pref, cycle } = useTheme();
 
@@ -18,14 +16,6 @@ const status = (t: { start: string; end: string }) =>
 const featured = computed(() => sorted.value.find((t) => status(t) === 'live') ?? sorted.value.find((t) => status(t) === 'upcoming'));
 const rest = computed(() => sorted.value.filter((t) => t !== featured.value));
 const cd = featured.value ? useCountdown(featured.value.start, featured.value.end) : null;
-
-onMounted(() => {
-  // First launch: open straight into the live trip (or the only trip). The list stays one tap back.
-  const seen = sessionStorage.getItem('et:seenList');
-  const target = TRIPS.length === 1 ? TRIPS[0] : sorted.value.find((t) => status(t) === 'live');
-  sessionStorage.setItem('et:seenList', '1');
-  if (!seen && target) router.replace({ name: 'plan', params: { slug: target.slug } });
-});
 </script>
 
 <template>

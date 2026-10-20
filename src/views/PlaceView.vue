@@ -120,7 +120,7 @@ async function share() {
 </template>
 
 <style scoped>
-.photo { position: relative; margin: 0 calc(-1 * var(--gutter)); height: 240px; }
+.photo { position: relative; margin: -16px calc(-1 * var(--gutter)) 0; height: 240px; }
 .fb { position: absolute; inset: 0; display: grid; place-items: center; background: var(--k-soft); }
 .scrim { position: absolute; inset: 0; background: linear-gradient(to top, var(--bg), transparent 55%); pointer-events: none; }
 .head { position: relative; margin-top: -32px; display: grid; gap: 10px; }

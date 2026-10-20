@@ -4,6 +4,7 @@ import { useTrip } from '@/composables/useTrip';
 import { useChecklist } from '@/composables/useStore';
 import { fmtRange } from '@/composables/useNow';
 import Icon from '@/components/ui/Icon.vue';
+import SyncCard from '@/components/SyncCard.vue';
 
 const { trip } = useTrip();
 const t = trip.value;
@@ -18,6 +19,12 @@ const mapsHref = computed(() => `https://www.google.com/maps/search/?api=1&query
       <p class="eyebrow">{{ fmtRange(t.start, t.end) }} · {{ t.travellers.join(' & ') }}</p>
       <h1 class="h1">Info</h1>
     </header>
+
+    <!-- Sync -->
+    <section>
+      <div class="sec-head"><span class="dot" /><span>Sync</span></div>
+      <SyncCard :slug="t.slug" />
+    </section>
 
     <!-- Stay -->
     <section>
