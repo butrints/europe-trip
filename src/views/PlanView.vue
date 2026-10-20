@@ -77,17 +77,24 @@ watch(sel, () => { sumOpen.value = false; });
 
 <template>
   <main class="page plan">
-    <section class="hero" :class="{ noimg: !day.hero }">
-      <SmartImg v-if="day.hero" :src="day.hero" :alt="day.title" />
-      <div class="scrim" />
-      <div class="hb">
-        <p class="eyebrow">Day {{ dayNum }} of {{ t.days.length }} · {{ fullDate }}</p>
-        <h1 class="display italic">{{ day.title }}</h1>
+    <section class="hero">
+      <p class="hero-k num">Day {{ dayNum }} of {{ t.days.length }} · {{ fullDate }}</p>
+      <h1 class="hero-t">{{ day.title }}</h1>
+      <div class="sum">
+        <p class="hero-s" :class="{ open: sumOpen }">{{ day.summary }}</p>
+        <button v-if="day.summary.length > 70" class="sum-t" :aria-expanded="sumOpen" @click="sumOpen = !sumOpen">{{ sumOpen ? 'Less' : 'More' }}</button>
+      </div>
+      <div class="sun">
+        <div class="sl num">
+          <span>☀ {{ sun.rise }}</span>
+          <span class="dl">{{ daylight }}</span>
+          <span>{{ sun.set }} ☾</span>
+        </div>
+        <div class="bar"><i :style="{ left: sunPct.left + '%', width: sunPct.width + '%' }" /><b v-if="isToday" :style="{ left: sunPct.now + '%' }" /></div>
       </div>
     </section>
-    <p class="sum">{{ day.summary }}</p>
 
-    <section v-if="cd.phase === 'before'" class="now">
+    <section v-if="cd.phase === 'before'" class="now card tint pad" style="--tint: var(--sec-soft)">
       <div class="nl">Departure in</div>
       <div class="cd num">
         <div><b>{{ cd.days }}</b><span>days</span></div>
@@ -96,7 +103,7 @@ watch(sel, () => { sumOpen.value = false; });
       </div>
       <p class="nm">{{ fmtRange(t.start, t.end) }} · {{ t.travellers.join(' & ') }}</p>
     </section>
-    <section v-else-if="cd.phase === 'during' && isToday" class="now live">
+    <section v-else-if="cd.phase === 'during' && isToday" class="now card tint pad" style="--tint: var(--sec-soft)">
       <div class="nl">Right now</div>
       <template v-if="nextItem">
         <div class="nb">Next fixed: {{ nextItem.title }}</div>
@@ -108,116 +115,109 @@ watch(sel, () => { sumOpen.value = false; });
       </template>
     </section>
 
-    <section class="sunbar">
-      <div class="sl">
-        <span><Icon name="sun" :size="14" /> {{ sun.rise }}</span>
-        <span class="dl">{{ daylight }}</span>
-        <span>{{ sun.set }} <Icon name="moon" :size="14" /></span>
-      </div>
-      <div class="bar"><i :style="{ left: sunPct.left + '%', width: sunPct.width + '%' }" /><b v-if="isToday" :style="{ left: sunPct.now + '%' }" /></div>
-    </section>
-
     <nav class="days chips" aria-label="Days">
-      <button v-for="d in t.days" :key="d.date" class="dchip" :class="{ active: d.date === sel, today: d.date === today }" @click="sel = d.date">
+      <button v-for="d in t.days" :key="d.date" class="chip dchip" :class="{ on: d.date === sel, today: d.date === today }" :aria-pressed="d.date === sel" @click="sel = d.date">
         <small>{{ wd(d.date) }}</small>
         <b class="num">{{ dn(d.date) }}</b>
         <em>{{ mo(d.date) }}</em>
       </button>
     </nav>
 
-    <div v-if="day.tags?.length" class="dtags"><span v-for="tg in day.tags" :key="tg" class="tag ember">{{ tg }}</span></div>
+    <div v-if="day.tags?.length" class="dtags"><span v-for="tg in day.tags" :key="tg" class="tag" style="--tag: var(--sec); --tag-soft: var(--sec-soft)">{{ tg }}</span></div>
 
     <!-- Fixed anchors -->
-    <section v-if="anchors.length" class="block">
-      <div class="bh"><span class="eyebrow"><Icon name="clock" :size="12" /> Fixed times</span><span class="faint tiny">{{ dayCity?.name }}</span></div>
-      <TimelineItem v-for="it in anchors" :key="it.id" :item="it" :done="done.has(it.id)" :is-now="it.id === currentId" :is-past="isPast(it.id)" @toggle="done.toggle(it.id)" />
+    <section v-if="anchors.length">
+      <div class="sec-head"><span class="dot" />Fixed times<span class="count">{{ anchors.length }}</span><span v-if="dayCity" class="where">{{ dayCity.name }}</span></div>
+      <div class="stack">
+        <TimelineItem v-for="it in anchors" :key="it.id" :item="it" :done="done.has(it.id)" :is-now="it.id === currentId" :is-past="isPast(it.id)" @toggle="done.toggle(it.id)" />
+      </div>
     </section>
 
     <!-- Your picks -->
-    <section class="block">
-      <div class="bh"><span class="eyebrow"><Icon name="heart" :size="12" /> Your picks · any order</span><RouterLink class="more" :to="{ name: 'explore' }">Explore +</RouterLink></div>
-      <div v-if="pickPlaces.length" class="picks">
+    <section>
+      <div class="sec-head"><span class="dot" />Your picks · any order<span v-if="pickPlaces.length" class="count">{{ pickPlaces.length }}</span><RouterLink class="more" :to="{ name: 'explore' }">Explore +</RouterLink></div>
+      <div v-if="pickPlaces.length" class="stack">
         <div v-for="(p, i) in pickPlaces" :key="p.id" class="pick">
           <PlaceCard :place="p" :visited="visited.has(p.id)" />
           <div class="pa">
-            <button class="pb" :disabled="i === 0" aria-label="Move up" @click="picks.move(sel, p.id, -1)"><Icon name="chevron" :size="14" class="up" /></button>
-            <button class="pb" :disabled="i === pickPlaces.length - 1" aria-label="Move down" @click="picks.move(sel, p.id, 1)"><Icon name="chevron" :size="14" class="down" /></button>
-            <a class="pb go" :href="nav(p)" target="_blank" rel="noopener" aria-label="Navigate"><Icon name="nav" :size="15" /></a>
-            <button class="pb rm" aria-label="Remove" @click="picks.toggle(sel, p.id)"><Icon name="close" :size="14" /></button>
+            <button class="pb" :disabled="i === 0" aria-label="Move up" @click="picks.move(sel, p.id, -1)"><Icon name="chevron" :size="16" class="up" /></button>
+            <button class="pb" :disabled="i === pickPlaces.length - 1" aria-label="Move down" @click="picks.move(sel, p.id, 1)"><Icon name="chevron" :size="16" class="down" /></button>
+            <a class="pb go" :href="nav(p)" target="_blank" rel="noopener" aria-label="Navigate"><Icon name="nav" :size="16" /></a>
+            <button class="pb" aria-label="Remove" @click="picks.toggle(sel, p.id)"><Icon name="close" :size="16" /></button>
           </div>
         </div>
       </div>
-      <div v-else class="card hint">
-        <Icon name="compass" />
+      <div v-else class="card pad hint">
+        <span class="ico-tile" style="--k: var(--sec); --k-soft: var(--sec-soft)"><Icon name="compass" :size="18" /></span>
         <p>Nothing picked for this day yet. Open <RouterLink :to="{ name: 'explore' }">Explore</RouterLink>, tap a place, then <b>Add to day</b>. Order is yours.</p>
       </div>
     </section>
 
     <!-- Ideas pool -->
-    <section v-if="ideas.length" class="block">
-      <div class="bh"><span class="eyebrow"><Icon name="sparkle" :size="12" /> Ideas for this day</span><span class="faint tiny">{{ ideas.length }}</span></div>
-      <TimelineItem v-for="it in ideas" :key="it.id" :item="it" :done="done.has(it.id)" :is-now="false" :is-past="false" compact @toggle="done.toggle(it.id)" />
+    <section v-if="ideas.length">
+      <div class="sec-head">
+        <span class="dot" />Ideas for this day
+        <button class="more" :aria-expanded="ideasOpen" @click="ideasOpen = !ideasOpen">{{ ideasOpen ? 'Hide' : `Show ideas (${ideas.length})` }}</button>
+      </div>
+      <div v-if="ideasOpen" class="stack">
+        <TimelineItem v-for="it in ideas" :key="it.id" :item="it" :done="done.has(it.id)" :is-now="false" :is-past="false" compact @toggle="done.toggle(it.id)" />
+      </div>
     </section>
 
-    <WeatherStrip v-for="c in wxCities" :key="c.id" :city="c" :start="t.start" :end="t.end" :today="today" />
+    <!-- Weather -->
+    <section v-if="wxCities.length">
+      <div class="sec-head"><span class="dot" />Weather</div>
+      <div class="stack">
+        <WeatherStrip v-for="c in wxCities" :key="c.id" :city="c" :start="t.start" :end="t.end" :today="today" />
+      </div>
+    </section>
   </main>
 </template>
 
 <style scoped>
-.hero { position: relative; margin: 0 calc(-1 * var(--gutter)); height: 280px; }
-.hero :deep(.img) { position: absolute; inset: 0; }
-.hero.noimg { height: auto; }
-.scrim { position: absolute; inset: 0; background: linear-gradient(to top, var(--paper) 0%, color-mix(in srgb, var(--paper) 88%, transparent) 30%, color-mix(in srgb, var(--paper) 30%, transparent) 60%, transparent 100%); }
-.hero.noimg .scrim { display: none; }
-.hb { position: absolute; left: var(--gutter); right: var(--gutter); bottom: 2px; }
-.hero.noimg .hb { position: static; padding: 28px 0 0; }
-.hb .eyebrow { margin-bottom: 8px; }
-.hb h1 { font-size: 2.5rem; }
-.sum { margin-top: 10px; font-size: 0.9375rem; color: var(--ink-2); line-height: 1.5; }
+/* hero */
+.sum { display: grid; gap: 4px; justify-items: start; }
+.sum-t { font-size: 13px; font-weight: 600; color: #fff; text-decoration: underline; text-underline-offset: 2px; }
+.sun { display: grid; gap: 8px; margin-top: 4px; }
+.sl { display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 12px; font-weight: 600; color: #fff; }
+.sl .dl { text-align: center; }
+.bar { position: relative; height: 6px; border-radius: 3px; background: rgba(255, 255, 255, .28); }
+.bar i { position: absolute; top: 0; bottom: 0; border-radius: 3px; background: #FFD84D; }
+.bar b { position: absolute; top: -4px; width: 14px; height: 14px; border-radius: 50%; background: #fff; transform: translateX(-50%); box-shadow: 0 1px 3px rgba(0, 0, 0, .25); }
 
-.now { margin-top: 18px; padding: 18px; border-radius: var(--r-lg); background: var(--ink); color: var(--paper); }
-.now.live { background: var(--ember); color: #fff; }
-.nl { font-size: 0.6875rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; opacity: .65; }
-.nb { font-family: var(--font-display); font-size: 1.5rem; margin-top: 4px; letter-spacing: -0.01em; line-height: 1.15; }
-.nm { font-size: 0.8125rem; opacity: .75; margin-top: 6px; }
-.cd { display: flex; gap: 22px; margin-top: 8px; }
-.cd b { display: block; font-family: var(--font-display); font-size: 2.25rem; font-weight: 500; letter-spacing: -0.03em; line-height: 1; }
-.cd span { font-size: 0.625rem; text-transform: uppercase; letter-spacing: .1em; opacity: .6; }
+/* countdown / right now */
+.now { margin-top: 12px; display: grid; gap: 6px; }
+.nl { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--sec); }
+.nb { font-size: 17px; font-weight: 700; letter-spacing: -.01em; line-height: 1.25; color: var(--fg); text-wrap: balance; }
+.nm { font-size: 13px; color: var(--fg-2); }
+.cd { display: flex; gap: 24px; }
+.cd b { display: block; font-size: 28px; font-weight: 800; letter-spacing: -.01em; line-height: 1.1; color: var(--sec); }
+.cd span { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--fg-2); }
 
-.sunbar { margin-top: 16px; }
-.sl { display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; color: var(--ink-2); font-weight: 500; }
-.sl span { display: inline-flex; align-items: center; gap: 4px; }
-.sl .dl { font-weight: 600; color: var(--ink); }
-.bar { position: relative; height: 6px; border-radius: 3px; background: var(--line); margin-top: 8px; }
-.bar i { position: absolute; top: 0; bottom: 0; border-radius: 3px; background: linear-gradient(90deg, var(--gold), #F3C85A, var(--gold)); }
-.bar b { position: absolute; top: -4px; width: 14px; height: 14px; border-radius: 50%; background: var(--ember); border: 2px solid var(--paper); transform: translateX(-50%); box-shadow: var(--shadow-1); }
+/* day picker */
+.days { margin-top: 16px; padding-top: 2px; padding-bottom: 2px; }
+.dchip { flex-direction: column; justify-content: center; gap: 2px; min-width: 58px; padding: 8px 10px; border-radius: var(--r-lg); line-height: 1.1; }
+.dchip small, .dchip em { font-size: 11px; font-style: normal; font-weight: 600; text-transform: uppercase; letter-spacing: .08em; }
+.dchip em { text-transform: none; letter-spacing: 0; }
+.dchip b { font-size: 17px; font-weight: 800; color: var(--fg); }
+.dchip.on b { color: #fff; }
+.dchip.today:not(.on) { border-color: var(--sec); box-shadow: inset 0 0 0 1px var(--sec); }
+.dtags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 12px; }
 
-.days { margin-top: 20px; }
-.dchip { flex: none; display: flex; flex-direction: column; align-items: center; min-width: 60px; padding: 8px 10px; border-radius: 16px; background: var(--card); border: 1px solid var(--line); color: var(--ink-2); line-height: 1.1; transition: all .25s var(--ease); scroll-snap-align: start; }
-.dchip small { font-size: 0.625rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; }
-.dchip b { font-family: var(--font-display); font-size: 1.375rem; font-weight: 500; color: var(--ink); margin: 2px 0; }
-.dchip em { font-style: normal; font-size: 0.625rem; }
-.dchip.today { border-color: var(--ember); }
-.dchip.active { background: var(--ink); border-color: var(--ink); color: var(--paper); }
-.dchip.active b { color: var(--paper); }
-.dchip:active { transform: scale(0.95); }
-.dtags { display: flex; gap: 6px; flex-wrap: wrap; margin: 4px 0 0; }
+/* sections */
+.sec-head .where { margin-left: auto; font-size: 13px; font-weight: 600; letter-spacing: 0; text-transform: none; color: var(--fg-3); }
+.stack { display: grid; gap: 12px; }
 
-.block { margin-top: 22px; }
-.bh { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-.bh .eyebrow { display: inline-flex; align-items: center; gap: 5px; }
-.bh .more { font-size: 0.8125rem; font-weight: 600; color: var(--ember); }
-.tiny { font-size: 0.75rem; }
-.picks { display: grid; gap: 10px; }
-.pick { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: stretch; }
-.pa { display: flex; flex-direction: column; gap: 4px; justify-content: center; }
-.pb { width: 34px; height: 30px; border-radius: 9px; background: var(--card); border: 1px solid var(--line); display: grid; place-items: center; color: var(--ink-2); }
+/* picks */
+.pick { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: center; }
+.pa { display: grid; gap: 6px; }
+.pb { width: 34px; height: 34px; border-radius: var(--r-sm); background: var(--card); border: 1px solid var(--line); display: grid; place-items: center; color: var(--fg-2); transition: transform .2s var(--ease); }
+.pb:active { transform: scale(.94); }
 .pb:disabled { opacity: .35; }
 .pb .up { transform: rotate(-90deg); }
 .pb .down { transform: rotate(90deg); }
-.pb.go { color: var(--ember); }
-.pb.rm { color: var(--ink-3); }
-.hint { display: flex; gap: 12px; align-items: center; padding: 14px; font-size: 0.875rem; color: var(--ink-2); line-height: 1.45; }
-.hint .ic { color: var(--ember); }
-.hint b { color: var(--ink); }
+.pb.go { color: var(--sec); }
+.hint { display: flex; gap: 12px; align-items: center; font-size: 14px; line-height: 1.45; color: var(--fg-2); }
+.hint a { color: var(--sec); font-weight: 600; }
+.hint b { color: var(--fg); }
 </style>

@@ -13,8 +13,8 @@ const failed = ref(false);
 </template>
 
 <style scoped>
-.img { position: relative; width: 100%; height: 100%; overflow: hidden; background: linear-gradient(135deg, var(--paper-2), var(--card-2)); }
+.img { position: relative; width: 100%; height: 100%; overflow: hidden; background: var(--bg-2); }
 img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity .5s var(--ease); }
 img.loaded { opacity: 1; }
-.ph { position: absolute; inset: 0; display: grid; place-items: center; color: var(--ink-3); }
+.ph { position: absolute; inset: 0; display: grid; place-items: center; color: var(--fg-3); }
 </style>

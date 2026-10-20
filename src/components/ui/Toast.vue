@@ -18,6 +18,6 @@ defineExpose({ toast });
 </template>
 
 <style scoped>
-.toast { position: fixed; left: 50%; bottom: calc(var(--tabbar) + var(--sab) + 20px); transform: translate(-50%, 16px); z-index: 200; padding: 10px 18px; border-radius: var(--r-pill); background: var(--ink); color: var(--paper); font-size: 0.8125rem; font-weight: 600; opacity: 0; transition: all .3s var(--ease); pointer-events: none; white-space: nowrap; box-shadow: var(--shadow-2); }
+.toast { position: fixed; left: 50%; bottom: calc(var(--tabbar) + var(--sab) + 24px); transform: translate(-50%, 16px); z-index: 200; padding: 10px 18px; border-radius: var(--r-pill); background: var(--fg); color: var(--bg); font-size: 13px; font-weight: 600; opacity: 0; transition: opacity .25s, transform .25s; pointer-events: none; white-space: nowrap; box-shadow: var(--sh-2); }
 .toast.show { opacity: 1; transform: translate(-50%, 0); }
 </style>

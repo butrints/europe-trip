@@ -24,7 +24,7 @@ const selected = ref<Place | null>(null);
 let map: L.Map | null = null;
 let layer: L.LayerGroup | null = null;
 
-const colors: Record<PlaceCategory, string> = { sight: '#3A6EA5', view: '#1B9AAA', museum: '#7B4B94', food: '#D6A21E', cafe: '#A2845E', bar: '#A2845E', market: '#C0396B', xmas: '#C84B2F', shop: '#C0396B', park: '#1F6B52', station: '#14171F', stay: '#14171F' };
+const kindOf: Record<PlaceCategory, string> = { sight: 'sight', view: 'view', museum: 'sight', food: 'food', cafe: 'food', bar: 'food', market: 'food', xmas: 'xmas', shop: 'shop', park: 'free', station: 'transit', stay: 'home' };
 const matches = (p: Place) => {
   if (p.city !== cityF.value) return false;
   const f = catF.value;
@@ -36,12 +36,11 @@ const matches = (p: Place) => {
 };
 
 function pinIcon(p: Place) {
-  const c = colors[p.cat];
   const done = visited.has(p.id);
   const star = p.rating === 3 ? '★' : '';
   return L.divIcon({
     className: '',
-    html: `<div class="pin${done ? ' done' : ''}" style="--c:${c}"><span>${star}</span></div>`,
+    html: `<div class="pin${done ? ' done' : ''}" style="--c: var(--k-${kindOf[p.cat]})"><span>${star}</span></div>`,
     iconSize: [28, 28], iconAnchor: [14, 28], popupAnchor: [0, -28],
   });
 }
@@ -87,16 +86,16 @@ const cats: { id: typeof catF.value; label: string; icon?: string }[] = [
   <div class="mapwrap">
     <div ref="el" class="map" />
     <div class="top">
-      <div v-if="t.cities.length > 1" class="seg">
-        <button v-for="c in t.cities" :key="c.id" :class="{ active: cityF === c.id }" @click="cityF = c.id">{{ c.name }}</button>
+      <div v-if="t.cities.length > 1" class="chips">
+        <button v-for="c in t.cities" :key="c.id" class="chip" :class="{ on: cityF === c.id }" @click="cityF = c.id">{{ c.name }}</button>
       </div>
       <div class="chips">
-        <button v-for="c in cats" :key="c.id" class="chip" :class="{ active: catF === c.id }" @click="catF = c.id"><Icon v-if="c.icon" :name="c.icon" />{{ c.label }}</button>
+        <button v-for="c in cats" :key="c.id" class="chip" :class="{ on: catF === c.id }" @click="catF = c.id"><Icon v-if="c.icon" :name="c.icon" />{{ c.label }}</button>
       </div>
     </div>
     <Transition name="slideup">
       <div v-if="selected" class="sheet card" @click="router.push({ name: 'place', params: { id: selected.id } })">
-        <div class="si" :style="{ background: colors[selected.cat] }"><Icon name="pin" :size="18" /></div>
+        <div class="ico-tile solid" :style="{ '--k': `var(--k-${kindOf[selected.cat]})` }"><Icon name="pin" :size="18" /></div>
         <div class="st">
           <b>{{ selected.name }}</b>
           <span>{{ selected.blurb }}</span>
@@ -109,35 +108,29 @@ const cats: { id: typeof catF.value; label: string; icon?: string }[] = [
 </template>
 
 <style scoped>
-.mapwrap { position: relative; height: calc(100dvh - 58px - var(--sat)); }
-.map { position: absolute; inset: 0; background: var(--paper); }
-.map :deep(.leaflet-tile-pane) { filter: var(--map-filter); }
+.mapwrap { position: relative; isolation: isolate; height: calc(100dvh - 58px - var(--sat)); }
+.map { position: absolute; inset: 0; background: var(--bg-2); }
 .map :deep(.pin) { width: 28px; height: 28px; border-radius: 50% 50% 50% 0; transform: rotate(-45deg); background: var(--c); border: 2px solid #fff; box-shadow: 0 2px 6px rgba(0,0,0,.3); display: grid; place-items: center; }
 .map :deep(.pin.done) { opacity: .45; }
 .map :deep(.pin > span) { transform: rotate(45deg); color: #fff; font-size: 11px; font-weight: 700; line-height: 1; }
-.map :deep(.pin.base) { border-radius: 50%; transform: none; background: var(--ink); border-color: var(--paper); width: 30px; height: 30px; }
-.map :deep(.pin.base > span) { transform: none; color: var(--paper); font-size: 15px; }
-.map :deep(.leaflet-tooltip) { background: var(--card); color: var(--ink); border: 1px solid var(--line); border-radius: 8px; font-family: inherit; font-weight: 600; font-size: 12px; box-shadow: var(--shadow-1); }
+.map :deep(.pin.base) { border-radius: 50%; transform: none; background: var(--fg); border-color: var(--bg); width: 30px; height: 30px; }
+.map :deep(.pin.base > span) { transform: none; color: var(--bg); font-size: 15px; }
+.map :deep(.leaflet-tooltip) { background: var(--card); color: var(--fg); border: 1px solid var(--line); border-radius: 8px; font-family: inherit; font-weight: 600; font-size: 12px; box-shadow: var(--sh-1); }
 .map :deep(.leaflet-tooltip-top::before) { border-top-color: var(--card); }
-.map :deep(.leaflet-control-zoom a) { background: var(--card); color: var(--ink); border-color: var(--line); }
-.map :deep(.leaflet-control-attribution) { background: var(--glass); color: var(--ink-3); font-size: 9px; font-family: inherit; }
-.map :deep(.leaflet-control-attribution a) { color: var(--ink-2); }
+.map :deep(.leaflet-control-zoom) { border: 1px solid var(--line); border-radius: var(--r-md); overflow: hidden; box-shadow: var(--sh-1); }
+.map :deep(.leaflet-control-zoom a) { background: var(--card); color: var(--fg); border-color: var(--line); }
+.map :deep(.leaflet-control-attribution) { background: var(--card); color: var(--fg-2); font-size: 9px; font-family: inherit; opacity: .9; }
+.map :deep(.leaflet-control-attribution a) { color: var(--fg-2); }
 .map :deep(.leaflet-bottom) { bottom: calc(var(--tabbar) + var(--sab) + 12px); }
-.top { position: absolute; top: 10px; left: 0; right: 0; z-index: 500; padding: 0 var(--gutter); pointer-events: none; }
+.top { position: absolute; top: 10px; left: 0; right: 0; z-index: 500; padding: 0 var(--gutter); pointer-events: none; display: grid; gap: 8px; }
 .top > * { pointer-events: auto; }
-.seg { display: inline-flex; background: var(--glass-strong); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-radius: var(--r-pill); padding: 3px; gap: 2px; border: 1px solid var(--line); box-shadow: var(--shadow-1); margin-bottom: 8px; }
-.seg button { padding: 7px 14px; border-radius: var(--r-pill); font-size: 0.8125rem; font-weight: 600; color: var(--ink-2); }
-.seg button.active { background: var(--ink); color: var(--paper); }
-.chips { margin: 0; padding: 0; }
-.chip { background: var(--glass-strong); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); box-shadow: var(--shadow-1); }
-.chip.active { background: var(--ink); color: var(--paper); }
-.sheet { position: absolute; left: var(--gutter); right: var(--gutter); bottom: calc(var(--tabbar) + var(--sab) + 20px); z-index: 500; display: flex; gap: 12px; align-items: center; padding: 12px 14px; cursor: pointer; box-shadow: var(--shadow-2); }
-.si { width: 38px; height: 38px; border-radius: 12px; display: grid; place-items: center; color: #fff; flex: none; }
-.st { flex: 1; min-width: 0; display: flex; flex-direction: column; }
-.st b { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.st span { font-size: 0.75rem; color: var(--ink-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.st .stop { color: var(--ember); font-weight: 500; }
-.chev { color: var(--ink-3); }
-.slideup-enter-active, .slideup-leave-active { transition: all .3s var(--ease); }
+.chip { box-shadow: var(--sh-1); flex: none; }
+.sheet { position: absolute; left: var(--gutter); right: var(--gutter); bottom: calc(var(--tabbar) + var(--sab) + 24px); z-index: 500; display: flex; gap: 12px; align-items: center; padding: 12px 14px; cursor: pointer; box-shadow: var(--sh-2); }
+.st { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.st b { font-size: 15px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.st span { font-size: 13px; color: var(--fg-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.st .stop { font-size: 12px; color: var(--sec); font-weight: 600; }
+.chev { color: var(--fg-3); flex: none; }
+.slideup-enter-active, .slideup-leave-active { transition: opacity .25s, transform .25s; }
 .slideup-enter-from, .slideup-leave-to { opacity: 0; transform: translateY(16px); }
 </style>

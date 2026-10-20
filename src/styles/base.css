@@ -22,11 +22,11 @@ svg { display: block; }
 ul, ol { list-style: none; }
 
 /* ---------- section colour mapping ---------- */
-.shell[data-sec="plan"] { --sec: var(--c-plan); --sec-soft: var(--k-home-soft); }
-.shell[data-sec="explore"] { --sec: var(--c-explore); --sec-soft: var(--k-free-soft); }
-.shell[data-sec="map"] { --sec: var(--c-map); --sec-soft: var(--k-view-soft); }
-.shell[data-sec="transit"] { --sec: var(--c-transit); --sec-soft: var(--k-sight-soft); }
-.shell[data-sec="info"] { --sec: var(--c-info); --sec-soft: var(--k-flight-soft); }
+:root[data-sec="plan"], .shell[data-sec="plan"] { --sec: var(--c-plan); --sec-soft: var(--k-home-soft); }
+:root[data-sec="explore"], .shell[data-sec="explore"] { --sec: var(--c-explore); --sec-soft: var(--k-free-soft); }
+:root[data-sec="map"], .shell[data-sec="map"] { --sec: var(--c-map); --sec-soft: var(--k-view-soft); }
+:root[data-sec="transit"], .shell[data-sec="transit"] { --sec: var(--c-transit); --sec-soft: var(--k-sight-soft); }
+:root[data-sec="info"], .shell[data-sec="info"] { --sec: var(--c-info); --sec-soft: var(--k-flight-soft); }
 
 /* ---------- type helpers ---------- */
 .num { font-variant-numeric: tabular-nums; }

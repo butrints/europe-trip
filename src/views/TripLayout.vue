@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, shallowRef, watch } from 'vue';
+import { computed, onBeforeUnmount, ref, shallowRef, watch, watchEffect } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import type { TripData } from '@/types/trip';
 import { tripMeta } from '@/trips';
@@ -35,6 +35,9 @@ const tabs = [
 const active = computed(() => (route.name === 'place' ? 'explore' : String(route.name)));
 const isSub = computed(() => route.name === 'place');
 const secOf = (n: unknown) => (n === 'place' ? 'explore' : ['plan','explore','map','transit','info'].includes(String(n)) ? String(n) : 'plan');
+// Mirror the section on <html> so teleported sheets/toasts (outside .shell) get the same --sec.
+watchEffect(() => { document.documentElement.dataset.sec = secOf(route.name); });
+onBeforeUnmount(() => { delete document.documentElement.dataset.sec; });
 
 function back() {
   if (window.history.state?.back) router.back();

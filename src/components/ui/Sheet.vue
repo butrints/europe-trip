@@ -44,7 +44,7 @@ onBeforeUnmount(() => { document.body.style.overflow = ''; window.removeEventLis
       <header class="sh">
         <div class="t">
           <div v-if="eyebrow" class="eyebrow">{{ eyebrow }}</div>
-          <h2 v-if="title" class="display">{{ title }}</h2>
+          <h2 v-if="title">{{ title }}</h2>
           <p v-if="sub" class="sum">{{ sub }}</p>
         </div>
         <button class="close" aria-label="Close" @click="emit('close')"><Icon name="close" :size="18" /></button>
@@ -55,17 +55,16 @@ onBeforeUnmount(() => { document.body.style.overflow = ''; window.removeEventLis
 </template>
 
 <style scoped>
-.sheet-backdrop { position: fixed; inset: 0; z-index: 100; background: var(--overlay); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); opacity: 0; pointer-events: none; transition: opacity .25s var(--ease); }
+.sheet-backdrop { position: fixed; inset: 0; z-index: 100; background: var(--overlay, rgba(14,16,20,.5)); opacity: 0; pointer-events: none; transition: opacity .25s; }
 .sheet-backdrop.show { opacity: 1; pointer-events: auto; }
-.sheet { position: fixed; left: 0; right: 0; bottom: 0; z-index: 101; max-width: var(--maxw); margin: 0 auto; max-height: 92dvh; background: var(--paper); border-radius: var(--r-xl) var(--r-xl) 0 0; box-shadow: var(--shadow-3); transform: translateY(104%); transition: transform .4s var(--ease); display: flex; flex-direction: column; }
+.sheet { position: fixed; left: 0; right: 0; bottom: 0; z-index: 101; max-width: var(--maxw); margin: 0 auto; max-height: 92dvh; background: var(--bg); border-radius: var(--r-xl) var(--r-xl) 0 0; box-shadow: var(--sh-2); transform: translateY(104%); transition: transform .35s cubic-bezier(.2,.8,.2,1); display: flex; flex-direction: column; }
 .sheet.show { transform: none; }
 .grab { width: 40px; height: 5px; border-radius: 3px; background: var(--line-2); margin: 10px auto 0; flex: none; }
-.sh { padding: 12px var(--gutter) 10px; display: flex; align-items: flex-start; gap: 12px; flex: none; }
+.sh { padding: 12px var(--gutter) 12px; display: flex; align-items: flex-start; gap: 12px; flex: none; }
 .sh .t { flex: 1; min-width: 0; }
-.sh .eyebrow { margin-bottom: 4px; }
-.sh h2 { font-size: 1.625rem; }
-.sh .sum { font-size: 0.875rem; color: var(--ink-2); margin-top: 4px; }
-.close { width: 36px; height: 36px; border-radius: 50%; background: var(--paper-2); display: grid; place-items: center; color: var(--ink-2); flex: none; }
-:root[data-theme="dark"] .close { background: var(--card-2); }
+.sh .eyebrow { margin-bottom: 4px; font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--sec, var(--c-plan)); }
+.sh h2 { font-size: 22px; font-weight: 800; letter-spacing: -.01em; line-height: 1.15; text-wrap: balance; }
+.sh .sum { font-size: 13px; color: var(--fg-2); margin-top: 4px; }
+.close { width: 36px; height: 36px; border-radius: 50%; background: var(--bg-2); display: grid; place-items: center; color: var(--fg-2); flex: none; }
 .sb { overflow-y: auto; padding: 0 var(--gutter) calc(var(--sab) + 24px); -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
 </style>

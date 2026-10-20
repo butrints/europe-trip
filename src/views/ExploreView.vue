@@ -55,23 +55,23 @@ const pickedCount = computed(() => Object.values(picks.map.value).reduce((n, a) 
 <template>
   <main class="page">
     <header class="ph">
-      <p class="eyebrow">{{ t.places.length }} places · {{ pickedCount }} picked · {{ visited.set.value.length }} visited</p>
-      <h1 class="display">Explore</h1>
+      <p class="eyebrow num">{{ t.title }} · {{ t.places.length }} places<template v-if="pickedCount"> · {{ pickedCount }} picked</template><template v-if="visited.set.value.length"> · {{ visited.set.value.length }} visited</template></p>
+      <h1 class="h1">Explore</h1>
     </header>
 
     <div class="search">
-      <Icon name="search" />
+      <Icon name="search" :size="18" />
       <input v-model="q" type="search" placeholder="Search places, stops, tags…" autocomplete="off" />
       <button v-if="q" class="clear" aria-label="Clear" @click="q = ''"><Icon name="close" :size="14" /></button>
     </div>
 
-    <div v-if="t.cities.length > 1" class="seg">
-      <button :class="{ active: cityF === 'all' }" @click="cityF = 'all'">All</button>
-      <button v-for="c in t.cities" :key="c.id" :class="{ active: cityF === c.id }" @click="cityF = c.id">{{ c.name }}</button>
-    </div>
+    <nav v-if="t.cities.length > 1" class="chips cities" aria-label="City">
+      <button class="chip" :class="{ on: cityF === 'all' }" @click="cityF = 'all'">All</button>
+      <button v-for="c in t.cities" :key="c.id" class="chip" :class="{ on: cityF === c.id }" @click="cityF = c.id">{{ c.name }}</button>
+    </nav>
 
-    <nav class="chips">
-      <button v-for="f in filters" :key="f.id" class="chip" :class="{ active: filter === f.id }" @click="filter = f.id">
+    <nav class="chips filters" aria-label="Filter">
+      <button v-for="f in filters" :key="f.id" class="chip" :class="{ on: filter === f.id }" @click="filter = f.id">
         <Icon v-if="f.icon" :name="f.icon" />{{ f.label }}
       </button>
     </nav>
@@ -79,23 +79,22 @@ const pickedCount = computed(() => Object.values(picks.map.value).reduce((n, a) 
     <div class="grid">
       <PlaceCard v-for="p in list" :key="p.id" :place="p" :visited="visited.has(p.id)" :picked="picks.daysWith(p.id).length > 0" :distance="dist(p)" />
     </div>
-    <div v-if="!list.length" class="empty"><p class="display">Nothing here</p>Try another filter.</div>
+    <div v-if="!list.length" class="empty"><b>Nothing here</b><br />Try another filter.</div>
   </main>
 </template>
 
 <style scoped>
-.ph { padding: 24px 0 14px; }
-.ph h1 { font-size: 2.25rem; }
-.search { position: relative; }
-.search input { width: 100%; height: 46px; padding: 0 40px 0 42px; border-radius: var(--r-md); background: var(--card); border: 1px solid var(--line); outline: none; transition: border-color .15s, box-shadow .15s; -webkit-appearance: none; }
-.search input:focus { border-color: var(--ember); box-shadow: 0 0 0 4px var(--ember-soft); }
-.search .ic { position: absolute; left: 13px; top: 13px; color: var(--ink-3); }
-.clear { position: absolute; right: 9px; top: 9px; width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; background: var(--paper-2); color: var(--ink-2); }
-.seg { display: inline-flex; background: var(--paper-2); border-radius: var(--r-pill); padding: 3px; gap: 2px; margin-top: 12px; }
-:root[data-theme="dark"] .seg { background: var(--card-2); }
-.seg button { padding: 7px 14px; border-radius: var(--r-pill); font-size: 0.8125rem; font-weight: 600; color: var(--ink-2); transition: all .2s var(--ease); }
-.seg button.active { background: var(--card); color: var(--ink); box-shadow: var(--shadow-1); }
-.chips { margin-top: 10px; }
-.grid { display: grid; gap: 12px; margin-top: 6px; }
+.ph { display: grid; gap: 6px; padding-top: calc(var(--sat) + 28px); }
+.search { position: relative; margin-top: 20px; }
+.search input { width: 100%; height: 46px; padding: 0 44px 0 42px; border-radius: var(--r-md); background: var(--card); border: 1px solid var(--line); color: var(--fg); font-size: 15px; outline: none; transition: border-color .15s, box-shadow .15s; -webkit-appearance: none; appearance: none; }
+.search input::placeholder { color: var(--fg-3); }
+.search input::-webkit-search-cancel-button { display: none; }
+.search input:focus { border-color: var(--sec); box-shadow: 0 0 0 3px var(--sec-soft); }
+.search > .ic { position: absolute; left: 14px; top: 14px; color: var(--fg-3); pointer-events: none; }
+.clear { position: absolute; right: 9px; top: 9px; width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; background: var(--bg-2); color: var(--fg-2); }
+.cities { margin-top: 12px; }
+.filters { margin-top: 8px; }
+.grid { display: grid; gap: 12px; margin-top: 20px; }
+.empty b { color: var(--fg); font-size: 17px; font-weight: 700; }
 @media (min-width: 720px) { .grid { grid-template-columns: 1fr 1fr; } }
 </style>
